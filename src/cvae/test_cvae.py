@@ -4,9 +4,7 @@ from tensorflow import keras
 
 from utils import show_images_3D
 
-(x_train, y_train), (x_test, _) = keras.datasets.mnist.load_data()
-
-ae = tf.keras.models.load_model('/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/mnist_cvae')
+ae = tf.keras.models.load_model('/data/autoencoder/cifar10_cvae')
 ae.summary()
 
 encoder = ae.layers[0]
