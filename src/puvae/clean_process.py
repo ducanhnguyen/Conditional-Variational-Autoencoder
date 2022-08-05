@@ -1,3 +1,7 @@
+'''
+DEFENSE.
+Given an input (clean or adv), PuVAE would reconstruct this input from the latent space.
+'''
 import numpy as np
 import tensorflow as tf
 

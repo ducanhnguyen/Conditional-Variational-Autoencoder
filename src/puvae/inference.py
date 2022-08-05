@@ -1,3 +1,6 @@
+'''
+Reconstruct the original image
+'''
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -28,13 +31,13 @@ def inference(puvae,
 if __name__ == '__main__':
 
     ae = tf.keras.models.load_model(
-        '/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/puvae/MNIST_ModelX_ALLfirst_400epochs_z=4_lr=0.001_weight=1|1|1')
+        '/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/puvae/CIFAR10_ModelA_100first_2000epochs_z=16_lr=0.001_weight=1|1|1')
     ae.summary()
 
     '''
     LOAD DATA
     '''
-    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+    (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
 
     one_hot_y_train = tf.keras.utils.to_categorical(y_train)
     if len(x_train.shape) == 3:  # Ex: (batch, height, width)

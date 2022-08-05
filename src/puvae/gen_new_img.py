@@ -1,5 +1,5 @@
 '''
-Test the latent space
+Generate new images from the latent space
 '''
 import numpy as np
 import tensorflow as tf
@@ -8,9 +8,9 @@ from utils import show_images_3D
 TARGET_CLS_IDX = 0
 ENCODER_IDX = 1
 DECODER_IDX = 2
-LATENT_DIM = 4
+LATENT_DIM = 16
 N_CLASSES = 10
-CVAE = '/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/puvae/MNIST_ModelX_ALLfirst_400epochs_z=4_lr=0.001_weight=1|1|1'
+CVAE = '/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/puvae/CIFAR10_ModelA_100first_2000epochs_z=16_lr=0.001_weight=1|1|1'
 
 '''
 LOAD MODEL
