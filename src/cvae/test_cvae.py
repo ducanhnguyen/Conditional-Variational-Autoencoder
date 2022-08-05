@@ -4,7 +4,7 @@ from tensorflow import keras
 
 from utils import show_images_3D
 
-ae = tf.keras.models.load_model('/data/autoencoder/cifar10_cvae')
+ae = tf.keras.models.load_model('/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/cvae/mnist_ALLfirst_1000epochs_z=4_lr=0.001')
 ae.summary()
 
 encoder = ae.layers[0]
@@ -14,7 +14,7 @@ input_decoder = decoder.inputs[0]  # (None, 16) = latent sapce + n_classes
 
 '''
 '''
-latent_dim_len = 6
+latent_dim_len = 4
 n_class = 10
 
 while True:

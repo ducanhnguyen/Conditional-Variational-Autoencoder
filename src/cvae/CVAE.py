@@ -7,6 +7,8 @@ from tensorflow.keras.models import Model
 from src.GaussianSampling import GaussianSampling
 from matplotlib import pyplot as plt
 
+from utils import mergeTF
+
 
 class CVAE(Model):
     def __init__(self, img_input_shape, n_classes, latent_dim=16, **kwargs):
@@ -21,7 +23,7 @@ class CVAE(Model):
         last_dense_shape = None
         last_conv_shape = None
 
-        encoder_inputs = keras.Input(shape=(height + n_classes, width, channels), name = "img+one-hot class")
+        encoder_inputs = keras.Input(shape=(height + n_classes, width, channels), name="img+one-hot class")
         x = encoder_inputs
 
         while True:
@@ -147,23 +149,15 @@ class CVAE(Model):
         }
 
 
-def mergeTF(x_train, one_hot_y_train):
-    _, h, w, c = x_train.shape  # (60000, 28, 28, 1)
-
-    one_hot_y_train = tf.expand_dims(one_hot_y_train, axis=2)
-    one_hot_y_train = tf.expand_dims(one_hot_y_train, axis=3)  # (60000, 10, 1, 1)
-
-    one_hot_y_train = tf.tile(one_hot_y_train, multiples=[1, 1, w, c])  # (60000, 10, 28, 1)
-
-    tmp = tf.concat((x_train, one_hot_y_train), axis=1)  # (60000, 38, 28, 1)
-    return tmp
-
-
 if __name__ == '__main__':
+    EPOCH = 1000
+    MAX_INDEX = None
+    LATENT_DIM = 4
+    LR = 0.001
     '''
     LOAD DATA
     '''
-    (x_train, y_train), (x_test, _) = keras.datasets.cifar10.load_data()
+    (x_train, y_train), (x_test, _) = keras.datasets.mnist.load_data()
 
     one_hot_y_train = tf.keras.utils.to_categorical(y_train)
     if len(x_train.shape) == 3:  # Ex: (batch, height, width)
@@ -178,8 +172,12 @@ if __name__ == '__main__':
     '''
     TRAIN MODEL
     '''
-    MAX_INDEX = 100
-    MODEL_PATH = '/data/autoencoder/cifar10_cvae'
+
+    if MAX_INDEX is None:
+        MODEL_NAME = f'mnist_ALLfirst_{EPOCH}epochs_z={LATENT_DIM}_lr={LR}'
+    else:
+        MODEL_NAME = f'mnist_{MAX_INDEX}first_{EPOCH}epochs_z={LATENT_DIM}_lr={LR}'
+    MODEL_PATH = f'/Users/ducanhnguyen/Documents/testingforAI-vnuuet/c-vae/data/autoencoder/cvae/{MODEL_NAME}'
 
     x_train = x_train[:MAX_INDEX]
     y_train = y_train[:MAX_INDEX]
@@ -187,17 +185,17 @@ if __name__ == '__main__':
 
     vae = CVAE(img_input_shape=(x_train.shape[1], x_train.shape[2], x_train.shape[3]),
                n_classes=len(np.unique(y_train)),
-               latent_dim=6)
+               latent_dim=LATENT_DIM)
 
     in1 = np.zeros(shape=(len(one_hot_y_train), x_train.shape[1], x_train.shape[2], x_train.shape[3]))
     in2 = one_hot_y_train
     output = vae([in1, in2])
 
-    vae.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001))
+    vae.compile(optimizer=keras.optimizers.Adam(learning_rate=LR))
 
     history = vae.fit(x=[x_train, one_hot_y_train],
                       y=x_train,
-                      epochs=3000,
+                      epochs=EPOCH,
                       batch_size=1024)
     vae.save(MODEL_PATH)
 
@@ -208,6 +206,7 @@ if __name__ == '__main__':
     plt.ylabel('kl_loss')
     plt.xlabel('epoch')
     plt.show()
+
 
     plt.plot(history.history['reconstruction_loss'])
     plt.ylabel('reconstruction_loss')
